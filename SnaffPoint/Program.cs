@@ -191,6 +191,29 @@ namespace SnaffPoint
                             Console.WriteLine(item.Path);
                             Console.WriteLine(typeof(ResultItem));
 
+                                // Attempt to fetch and preview the content of the item
+                                try
+                                {
+                                    var webClient = new WebClient();
+                                    webClient.Headers.Add("Authorization", BearerToken);
+                                    var rawContent = webClient.DownloadString(item.Path);
+
+                                    // Search for interesting keywords (example list)
+                                    string[] previewKeywords = new[] { "password", "token", "apikey", "secret" };
+
+                                    var matchedLines = rawContent.Split('\n')
+                                        .Where(line => previewKeywords.Any(k => line.IndexOf(k, StringComparison.OrdinalIgnoreCase) >= 0))
+                                        .Take(3); // limit to first 3 matched lines
+
+                                    foreach (var line in matchedLines)
+                                    {
+                                        Console.WriteLine($"    Preview: {line.Trim()}");
+                                    }    }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"    [!] Preview fetch failed: {ex.Message}");
+                                }
+
 
                         }
                     }
