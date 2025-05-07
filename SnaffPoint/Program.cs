@@ -387,4 +387,47 @@ Single query mode:
             }
         }
     }
+
+    // local test
+    if (args.Contains("--local"))
+{
+    var localIndex = Array.IndexOf(args, "--local");
+    if (localIndex == -1 || localIndex + 1 >= args.Length)
+    {
+        Console.WriteLine("Usage: --local <folderPath>");
+        return;
+    }
+
+    var folderPath = args[localIndex + 1];
+    if (!Directory.Exists(folderPath))
+    {
+        Console.WriteLine($"[!] Folder not found: {folderPath}");
+        return;
+    }
+
+    string[] previewKeywords = new[] { "password", "token", "secret", "apikey" };
+    var files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
+        .Where(f => f.EndsWith(".txt") || f.EndsWith(".log") || f.EndsWith(".md"));
+
+    foreach (var file in files)
+    {
+        var content = File.ReadAllLines(file);
+        var matchingLines = content
+            .Where(line => previewKeywords.Any(k => line.Contains(k, StringComparison.OrdinalIgnoreCase)))
+            .Take(3)
+            .ToList();
+
+        if (matchingLines.Any())
+        {
+            Console.WriteLine($"\n[+] Found in: {file}");
+            foreach (var line in matchingLines)
+            {
+                Console.WriteLine($"    Preview: {line.Trim()}");
+            }
+        }
+    }
+
+    return;
+}
+
 }
