@@ -1,8 +1,0 @@
-token = abc123
-secret: something
-test
-password1234
-dsjfakl;fdjksaljfskal;fjklsda;fj
-jibberish
-blahblahblah
-API Key=jfdksafjklsfja;lkjfdka;lsfj
